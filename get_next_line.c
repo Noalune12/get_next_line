@@ -2,6 +2,38 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+// extract exactly one line
+
+char	*get_line(char *content)
+{
+	char	*line;
+	size_t	len;
+	size_t	i;
+
+	len = 0;
+	if (!content[len])
+		return (NULL);
+	while (content[len])
+		len++;
+	line = ft_calloc(len + 2, sizeof(char));
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (content[i] && content[i] != '\n')
+	{
+		line[i] = content[i];
+		i++;
+	}
+	if (content[i] && content[i] == '\n')
+	{
+		line[i] = '\n';
+		line[++i] = '\0';
+	}
+	else
+		line[i] = '\0';
+	return (line);
+}
+
 // read file until \n with BUFFER_SIZE
 
 char	*read_file(int fd)
@@ -49,6 +81,18 @@ int	main(int argc, char **argv)
 	fd = open(argv[1], O_RDONLY);
 	line = read_file(fd);
 	printf("LINE = %s", line);
+	free(line);
+	close(fd);
+
+	//get line
+	printf("\n\nGET 1ST LINE\n\n");
+	char *content;
+	fd = open(argv[1], O_RDONLY);
+	content = read_file(fd);
+	printf("CONTENT = %s\n", content);
+	line = get_line(content);
+	printf("LINE = '%s'", line);
+	free(content);
 	free(line);
 	close(fd);
 	return (0);
