@@ -2,6 +2,35 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+// updte buffer
+
+char	*update_buffer(char *buffer)
+{
+	char	*next_line;
+	size_t	i;
+	size_t	j;
+
+	i= 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (!buffer[i])
+	{
+		free(buffer);
+		return (NULL);
+	}
+	next_line = ft_calloc(ft_strlen(buffer) - i, sizeof(char));
+	if (!next_line)
+		return (NULL);
+	j = 0;
+	while (buffer[++i])
+	{
+		next_line[j] = buffer[i];
+		j++;
+	}
+	free(buffer);
+	return (next_line);
+}
+
 // extract exactly one line
 
 char	*get_line(char *content)
@@ -92,6 +121,29 @@ int	main(int argc, char **argv)
 	printf("CONTENT = %s\n", content);
 	line = get_line(content);
 	printf("LINE = '%s'", line);
+	free(content);
+	free(line);
+	close(fd);
+
+	//get lines
+	printf("\n\nGET LINES\n\n");
+	fd = open(argv[1], O_RDONLY);
+	while (1)
+	{
+		content = read_file(fd);
+		if (!content)
+			break ;
+		printf("CONTENT = %s\n", content);
+		line = get_line(content);
+		if (!line)
+			break ;
+		printf("LINE = '%s'", line);
+		content = update_buffer(content);
+		printf("\nCONTENT = %s\n\n", content);
+		free(line);
+		free(content);
+	}
+
 	free(content);
 	free(line);
 	close(fd);
