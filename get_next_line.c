@@ -6,7 +6,7 @@
 /*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/19 15:48:36 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/21 08:42:02 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-// updte buffer
+// update buffer
 
 static char	*update_buffer(char *buffer)
 {
@@ -22,7 +22,7 @@ static char	*update_buffer(char *buffer)
 	size_t	i;
 	size_t	j;
 
-	i= 0;
+	i = 0;
 	while (buffer[i] && buffer[i] != '\n')
 		i++;
 	if (!buffer[i])
@@ -88,7 +88,7 @@ static char	*read_file(int fd, char *content)
 	b_read = 1;
 	while (b_read > 0)
 	{
-		b_read =read(fd, buffer, BUFFER_SIZE);
+		b_read = read(fd, buffer, BUFFER_SIZE);
 		if (b_read < 0)
 		{
 			free(buffer);
@@ -125,7 +125,7 @@ char	*get_next_line(int fd)
 	buffer = read_file(fd, buffer);
 	free(temp_buffer);
 	if (!buffer)
-		free(buffer);
+		return (NULL);
 	line = get_line(buffer);
 	buffer = update_buffer(buffer);
 	return (line);
