@@ -6,7 +6,7 @@
 /*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/21 08:42:02 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:27:57 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ int	main(int argc, char **argv)
 	// free(line);
 	// close(fd);
 
-	// //get lines
+	// //get linesfd
 	// printf("\n\nGET LINES\n\n");
 	// fd = open(argv[1], O_RDONLY);
 	// while (1)
@@ -185,11 +185,13 @@ int	main(int argc, char **argv)
 	//get next line
 	printf("\n\nGET NEXT LINE\n\n");
 	fd = open(argv[1], O_RDONLY);
+	printf("fd = %d\n\n", fd);
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		printf("LINE = \"%s\"\n", line);
 		free(line);
 	}
+	printf("LINE = \"%s\"\n", line);
 	close(fd);
 	return (0);
 }
