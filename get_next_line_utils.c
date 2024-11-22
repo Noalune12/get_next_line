@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 11:19:46 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/21 11:19:47 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/22 17:42:08 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	if (!ptr)
 		return (NULL);
 	i = 0;
-	while (i < nmemb)
+	while (i < (nmemb * size))
 	{
 		((unsigned char *)ptr)[i] = '\0';
 		i++;
@@ -49,18 +49,19 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-char	*ft_strrchr(const char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t	s_len;
+	char	*s_temp;
 
-	s_len = ft_strlen(s);
-	if (s[s_len] == '\0' && (unsigned char)c == '\0')
-		return ((char *)(s + s_len));
-	while (s_len--)
+	s_temp = (char *)s;
+	while (*s_temp)
 	{
-		if (s[s_len] == (unsigned char)c)
-			return ((char *)(s + s_len));
+		if (*s_temp == (char)c)
+			return (s_temp);
+		s_temp++;
 	}
+	if (*s_temp == '\0' && (char)c == '\0')
+		return (s_temp);
 	return (NULL);
 }
 

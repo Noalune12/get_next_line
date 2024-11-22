@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/21 12:36:15 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/22 17:45:05 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,26 @@ static char	*get_line(char *content)
 		i++;
 	}
 	if (content[i] && content[i] == '\n')
-	{
 		line[i] = '\n';
-		line[++i] = '\0';
-	}
-	else if (content[i] && content[i] != '\n')
-		line[i] = '\0';
 	return (line);
 }
 
 // read file until \n with BUFFER_SIZE
+static char	*content_join(char *content, char *buffer)
+{
+	char	*temp;
+
+	temp = ft_strjoin(content, buffer);
+	if (content)
+		free(content);
+	if (!temp)
+		return (NULL);
+	return (temp);
+}
 
 static char	*read_file(int fd, char *content)
 {
 	char	*buffer;
-	char	*temp;
 	int		b_read;
 
 	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
@@ -95,11 +100,8 @@ static char	*read_file(int fd, char *content)
 			return (NULL);
 		}
 		buffer[b_read] = '\0';
-		temp = ft_strjoin(content, buffer);
-		if (content)
-			free(content);
-		content = temp;
-		if (ft_strrchr(buffer, '\n'))
+		content = content_join(content, buffer);
+		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
 	free(buffer);
