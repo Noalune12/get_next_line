@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/22 18:13:27 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/22 18:16:03 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-
+#include "get_next_line_bonus.h"
 // update buffer
 
 static char	*update_buffer(char *buffer)
@@ -88,7 +87,8 @@ static char	*read_file(int fd, char *content)
 	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buffer)
 	{
-		free(content);
+		if (content)
+			free(content);
 		return (NULL);
 	}
 	b_read = 1;
@@ -111,89 +111,15 @@ static char	*read_file(int fd, char *content)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[OPEN_MAX];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-	{
-		if (buffer)
-		{
-			free(buffer);
-			buffer = NULL;
-		}
+	if (fd < 0  || fd >= OPEN_MAX || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	}
-	buffer = read_file(fd, buffer);
-	if (!buffer)
+	buffer[fd] = read_file(fd, buffer[fd]);
+	if (!buffer[fd])
 		return (NULL);
-	line = get_line(buffer);
-	buffer = update_buffer(buffer);
+	line = get_line(buffer[fd]);
+	buffer[fd] = update_buffer(buffer[fd]);
 	return (line);
 }
-
-// #include <fcntl.h>
-// #include <stdio.h>
-// int	main(int argc, char **argv)
-// {
-// 	if (argc != 2)
-// 		return (1);
-
-// 	int		fd;
-// 	char	*line;
-
-// 	// //read only one line
-// 	// printf("READ FILE UNTIL 1st \\n\n\n");
-// 	// fd = open(argv[1], O_RDONLY);
-// 	// line = read_file(fd);
-// 	// printf("LINE = %s", line);
-// 	// free(line);
-// 	// close(fd);
-
-// 	// //get line
-// 	// printf("\n\nGET 1ST LINE\n\n");
-// 	// char *content;
-// 	// fd = open(argv[1], O_RDONLY);
-// 	// content = read_file(fd);
-// 	// printf("CONTENT = %s\n", content);
-// 	// line = get_line(content);
-// 	// printf("LINE = '%s'", line);
-// 	// free(content);
-// 	// free(line);
-// 	// close(fd);
-
-// 	// //get linesfd
-// 	// printf("\n\nGET LINES\n\n");
-// 	// fd = open(argv[1], O_RDONLY);
-// 	// while (1)
-// 	// {
-// 	// 	content = read_file(fd);
-// 	// 	if (!content)
-// 	// 		break ;
-// 	// 	printf("CONTENT = %s\n", content);
-// 	// 	line = get_line(content);
-// 	// 	if (!line)
-// 	// 		break ;
-// 	// 	printf("LINE = '%s'", line);
-// 	// 	content = update_buffer(content);
-// 	// 	printf("\nCONTENT = %s\n\n", content);
-// 	// 	free(line);
-// 	// 	free(content);
-// 	// }
-
-// 	// free(content);
-// 	// free(line);
-// 	// close(fd);
-
-// 	//get next line
-// 	printf("\n\nGET NEXT LINE\n\n");
-// 	fd = open(argv[1], O_RDONLY);
-// 	printf("fd = %d\n\n", fd);
-// 	while ((line = get_next_line(fd)) != NULL)
-// 	{
-// 		printf("LINE = \"%s\"\n", line);
-// 		free(line);
-// 	}
-// 	printf("LINE = \"%s\"\n", line);
-// 	close(fd);
-// 	return (0);
-// }
