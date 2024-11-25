@@ -6,7 +6,7 @@
 /*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/22 18:13:27 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/25 18:37:26 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,54 +80,56 @@ static char	*content_join(char *content, char *buffer)
 	return (temp);
 }
 
-static char	*read_file(int fd, char *content)
+static char	*read_file(int fd, char *remaining_content, char *buffer)
 {
-	char	*buffer;
 	int		b_read;
+	char	*temp;
 
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!buffer)
-	{
-		free(content);
-		return (NULL);
-	}
 	b_read = 1;
 	while (b_read > 0)
 	{
 		b_read = read(fd, buffer, BUFFER_SIZE);
 		if (b_read < 0)
-		{
-			free(buffer);
-			return (NULL);
-		}
+			return (free(remaining_content), NULL);
+		else if (b_read == 0)
+			break ;
 		buffer[b_read] = '\0';
-		content = content_join(content, buffer);
+		if (!remaining_content)
+			remaining_content = ft_strdup("");
+		temp = content_join(remaining_content, buffer);
+		if (!temp)
+			return (free(remaining_content), NULL);
+		remaining_content = temp;
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	free(buffer);
-	return (content);
+	return (remaining_content);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*remaining_content;
 	char		*line;
+	char		*buffer;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		if (buffer)
+		if (remaining_content)
 		{
-			free(buffer);
-			buffer = NULL;
+			free(remaining_content);
+			remaining_content = NULL;
 		}
 		return (NULL);
 	}
-	buffer = read_file(fd, buffer);
+	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
-	line = get_line(buffer);
-	buffer = update_buffer(buffer);
+	remaining_content = read_file(fd, remaining_content, buffer);
+	free(buffer);
+	if (!remaining_content)
+		return (NULL);
+	line = get_line(remaining_content);
+	remaining_content = update_buffer(remaining_content);
 	return (line);
 }
 
