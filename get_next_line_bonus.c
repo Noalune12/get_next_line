@@ -6,7 +6,7 @@
 /*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/26 09:13:14 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:06:52 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static char	*get_line(char *content)
 
 static char	*read_file(int fd, char *remaining_content, char *buffer)
 {
-	int		b_read;
+	ssize_t	b_read;
 	char	*temp;
 
 	b_read = 1;
