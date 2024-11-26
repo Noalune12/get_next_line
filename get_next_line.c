@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/25 18:37:26 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:19:23 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,17 @@ static char	*get_line(char *content)
 }
 
 // read file until \n with BUFFER_SIZE
-static char	*content_join(char *content, char *buffer)
-{
-	char	*temp;
+// static char	*content_join(char *content, char *buffer)
+// {
+// 	char	*temp;
 
-	temp = ft_strjoin(content, buffer);
-	if (content)
-		free(content);
-	if (!temp)
-		return (NULL);
-	return (temp);
-}
+// 	temp = ft_strjoin(content, buffer);
+// 	if (content)
+// 		free(content);
+// 	if (!temp)
+// 		return (NULL);
+// 	return (temp);
+// }
 
 static char	*read_file(int fd, char *remaining_content, char *buffer)
 {
@@ -96,7 +96,8 @@ static char	*read_file(int fd, char *remaining_content, char *buffer)
 		buffer[b_read] = '\0';
 		if (!remaining_content)
 			remaining_content = ft_strdup("");
-		temp = content_join(remaining_content, buffer);
+		temp = ft_strjoin(remaining_content, buffer);
+		free(remaining_content);
 		if (!temp)
 			return (free(remaining_content), NULL);
 		remaining_content = temp;
