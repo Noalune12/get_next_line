@@ -6,7 +6,7 @@
 /*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/26 07:19:23 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/26 07:28:02 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,29 @@ char	*get_next_line(int fd)
 	remaining_content = update_buffer(remaining_content);
 	return (line);
 }
+
+// char	*get_next_line(int fd)
+// {
+// 	static char	*remaining_content;
+// 	char		*line;
+// 	char		buffer[BUFFER_SIZE + 1];
+
+// 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+// 	{
+// 		if (remaining_content)
+// 		{
+// 			free(remaining_content);
+// 			remaining_content = NULL;
+// 		}
+// 		return (NULL);
+// 	}
+// 	remaining_content = read_file(fd, remaining_content, buffer);
+// 	if (!remaining_content)
+// 		return (NULL);
+// 	line = get_line(remaining_content);
+// 	remaining_content = update_buffer(remaining_content);
+// 	return (line);
+// }
 
 // #include <fcntl.h>
 // #include <stdio.h>
