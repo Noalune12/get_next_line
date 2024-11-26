@@ -3,17 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/25 18:37:44 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:13:14 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-// update buffer
 
-// update buffer
+static char	*ft_free(char *content)
+{
+	if (content)
+	{
+		free(content);
+		content = NULL;
+	}
+	return (NULL);
+}
 
 static char	*update_buffer(char *buffer)
 {
@@ -25,10 +32,7 @@ static char	*update_buffer(char *buffer)
 	while (buffer[i] && buffer[i] != '\n')
 		i++;
 	if (!buffer[i])
-	{
-		free(buffer);
-		return (NULL);
-	}
+		return (ft_free(buffer));
 	next_line = ft_calloc(ft_strlen(buffer) - i, sizeof(char));
 	if (!next_line)
 		return (NULL);
@@ -38,11 +42,9 @@ static char	*update_buffer(char *buffer)
 		next_line[j] = buffer[i];
 		j++;
 	}
-	free(buffer);
+	ft_free(buffer);
 	return (next_line);
 }
-
-// extract exactly one line
 
 static char	*get_line(char *content)
 {
@@ -68,19 +70,6 @@ static char	*get_line(char *content)
 	return (line);
 }
 
-// read file until \n with BUFFER_SIZE
-static char	*content_join(char *content, char *buffer)
-{
-	char	*temp;
-
-	temp = ft_strjoin(content, buffer);
-	if (content)
-		free(content);
-	if (!temp)
-		return (NULL);
-	return (temp);
-}
-
 static char	*read_file(int fd, char *remaining_content, char *buffer)
 {
 	int		b_read;
@@ -91,15 +80,14 @@ static char	*read_file(int fd, char *remaining_content, char *buffer)
 	{
 		b_read = read(fd, buffer, BUFFER_SIZE);
 		if (b_read < 0)
-			return (free(remaining_content), NULL);
+			return (ft_free(remaining_content));
 		else if (b_read == 0)
 			break ;
 		buffer[b_read] = '\0';
-		if (!remaining_content)
-			remaining_content = ft_strdup("");
-		temp = content_join(remaining_content, buffer);
+		temp = ft_strjoin(remaining_content, buffer);
+		ft_free(remaining_content);
 		if (!temp)
-			return (free(remaining_content), NULL);
+			return (NULL);
 		remaining_content = temp;
 		if (ft_strchr(buffer, '\n'))
 			break ;
