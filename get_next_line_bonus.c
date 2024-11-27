@@ -6,7 +6,7 @@
 /*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/26 10:06:52 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/27 10:18:26 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		*buffer;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
 		if (remaining_content[fd])
 		{
@@ -112,7 +112,7 @@ char	*get_next_line(int fd)
 	}
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
-		return (NULL);
+		return (ft_free(remaining_content[fd]));
 	remaining_content[fd] = read_file(fd, remaining_content[fd], buffer);
 	free(buffer);
 	if (!remaining_content[fd])
