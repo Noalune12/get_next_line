@@ -37,12 +37,13 @@ int	main(int argc, char **argv)
 	printf("\n\nGET NEXT LINE\n\n");
 	fd = open(argv[1], O_RDONLY);
 	printf("fd = %d\n\n", fd);
-	while ((line = get_next_line(fd)) != NULL)
-	{
+	//while ((line = get_next_line(fd)) != NULL)
+	//{
+		line = get_next_line(fd);
 		printf("LINE = \"%s\"\n", line);
 		free(line);
-	}
-	printf("LINE = \"%s\"\n", line);
+	//}
+	//printf("LINE = \"%s\"\n", line);
 	close(fd);
 	return (0);
 }
