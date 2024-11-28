@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbuisson <lbuisson@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lbuisson <lbuisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:46:32 by lbuisson          #+#    #+#             */
-/*   Updated: 2024/11/27 13:40:54 by lbuisson         ###   ########.fr       */
+/*   Updated: 2024/11/28 15:46:54 by lbuisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static char	*update_buffer(char *buffer)
 {
 	size_t	i;
+	size_t	j;
 	size_t	len;
 
 	i = 0;
@@ -26,8 +27,13 @@ static char	*update_buffer(char *buffer)
 		ft_memset(buffer, '\0', len);
 		return (NULL);
 	}
-	ft_memmove(buffer, buffer + i + 1, len - i);
-	ft_memset(buffer + len - i, '\0', i + 1);
+	j = 0;
+	while (buffer[++i])
+	{
+		buffer[j] = buffer[i];
+		j++;
+	}
+	ft_memset(buffer + j, '\0', BUFFER_SIZE - j + 1);
 	return (buffer);
 }
 
@@ -47,7 +53,7 @@ static int	copy_line(char *line, char *content,
 	{
 		line_extracted[*index] = '\n';
 		line_extracted[*index + 1] = '\0';
-		free(line);
+		ft_free(line);
 		return (1);
 	}
 	return (0);
@@ -66,27 +72,23 @@ static char	*join_line_content(char *line, char *content)
 	line_extracted = (char *)malloc((line_len
 				+ ft_strlen_c(content, '\n') + 1) * sizeof(char));
 	if (!line_extracted)
-		return (NULL);
+		return (ft_free(line));
 	i = 0;
-	if (line_len > 0)
-	{
-		if (copy_line(line, line, line_extracted, &i) == 1)
-			return (line_extracted);
-	}
+	if (line_len > 0 && copy_line(line, line, line_extracted, &i) == 1)
+		return (line_extracted);
 	if (copy_line(line, content, line_extracted, &i) == 1)
 		return (line_extracted);
 	line_extracted[i] = '\0';
-	free(line);
+	ft_free(line);
 	return (line_extracted);
 }
 
 static char	*read_file_and_extract_line(int fd, char *content, char *line)
 {
 	ssize_t	b_read;
-	char	*temp;
 
 	b_read = 1;
-	while (b_read > 0 && !(ft_strchr(content, '\n')))
+	while (b_read > 0)
 	{
 		b_read = read(fd, content, BUFFER_SIZE);
 		if (b_read < 0)
@@ -97,10 +99,9 @@ static char	*read_file_and_extract_line(int fd, char *content, char *line)
 		else if (b_read == 0)
 			break ;
 		content[b_read] = '\0';
-		temp = join_line_content(line, content);
-		if (!temp)
-			return (ft_free(line));
-		line = temp;
+		line = join_line_content(line, content);
+		if (!line)
+			return (NULL);
 		if (ft_strchr(content, '\n'))
 			break ;
 		ft_memset(content, '\0', BUFFER_SIZE + 1);
@@ -117,12 +118,16 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (content[0])
-		line = join_line_content(line, content);
-	line = read_file_and_extract_line(fd, content, line);
-	if (!line)
 	{
-		ft_memset(content, '\0', BUFFER_SIZE + 1);
-		return (NULL);
+		line = join_line_content(line, content);
+		if (!line)
+			return (NULL);
+	}
+	if (!(ft_strchr(content, '\n')))
+	{
+		line = read_file_and_extract_line(fd, content, line);
+		if (!line)
+			return (NULL);
 	}
 	update_buffer(content);
 	return (line);
